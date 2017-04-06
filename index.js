@@ -89,14 +89,16 @@ function init(){
       images:['img/intro/num.png'],
       frames:{width:40,height:39,count:10},
       animations:{
-        'run':[0,9,'run',0.1]
+        'run':[0,9,'run',0.01],
+        'end':[0]
       }
     });
     var lastNum = new createjs.SpriteSheet({
       images:['img/intro/num.png'],
       frames:{width:40,height:39,count:10},
       animations:{
-        'run':[0,9,'run',1]
+        'run':[0,9,'run',0.1],
+        'end':[0]
       }
     });
     var first = new createjs.Sprite(firstNum,'run');
@@ -126,15 +128,15 @@ function init(){
     var count = 0;
     var countRun = setInterval(function (){
       count++;
-      if(count>=100){
+      if(count>=90){
         clearInterval(countRun);
-        first.gotoAndStop('run');
-        last.gotoAndStop('run');
+        first.gotoAndPlay('end');
+        last.gotoAndPlay('end');
     num.visible = false;
     load.visible = true;
     load.gotoAndPlay('run');
       };
-      console.log(count);
+      //console.log(count);
     },40);
     preloadPage.addChild(num,load);
     stage.update();
