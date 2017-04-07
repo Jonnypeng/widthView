@@ -1,6 +1,6 @@
 var preloadList = [
-  //{'id':'','src':''},
-  {'id':'num','src':'img/intro/num.png'},
-  {'id':'loading','src':'img/intro/loading.png'},
-  {'id':'logo','src':'img/intro/logo.png'}
+  {'src':'sounds/bg.mp3','id':'bgMusic'},
+  {'id':'page0a','src':'img/0/a.png'},
+  {'id':'page0arrow','src':'img/0/arrow.png'},
+  {'id':'page0txt','src':'img/0/txt.png'}
 ];

@@ -6,22 +6,25 @@ function init(){
   var loadQ = new createjs.LoadQueue();
   loadQ.addEventListener('complete',preload);
   loadQ.loadManifest([
-  {'id':'num','src':'img/intro/num.png'},
-  {'id':'loading','src':'img/intro/loading.png'},
-  {'id':'logo','src':'img/intro/logo.png'},
-  {'id':'alCir','src':'img/alert/circle.png'},
-  {'id':'alTip','src':'img/alert/tip.png'},
-  {'id':'alTxt','src':'img/alert/txt1.png'},
-  {'id':'alTxt2','src':'img/alert/txt2.png'}
+    {'id':'num','src':'img/intro/num.png'},
+    {'id':'loading','src':'img/intro/loading.png'},
+    {'id':'logo','src':'img/intro/logo.png'},
+    {'id':'alCir','src':'img/alert/circle.png'},
+    {'id':'alTip','src':'img/alert/tip.png'},
+    {'id':'alTxt','src':'img/alert/txt1.png'},
+    {'id':'alTxt2','src':'img/alert/txt2.png'}
   ]);
 
+
   function preload(){
-    var startState,orientationState;
+    var startState,orientationState,queue;
 
-    var alertPage = new createjs.Container();
-    var preloadPage = new createjs.Container();
+    var alertPage = new createjs.Container();     //提示页面
+    var preloadPage = new createjs.Container();   //载入页面
+    var page0 = new createjs.Container();  //封面
 
-    stage.addChild(preloadPage,alertPage);  //层级布局
+
+    stage.addChild(page0,preloadPage,alertPage);  //层级布局
 
     if(window.innerWidth<window.innerHeight){   //载入状态后，先检查屏幕状态，然后进行事件
       canvas.width = 640;
@@ -31,24 +34,24 @@ function init(){
     }else if(window.innerWidth>window.innerHeight){
       canvas.width = 1080;
       canvas.height = 640;
-        alertPage.visible = false;
+      alertPage.visible = false;
       orientationState = 'landscape';
     }
 
     window.addEventListener( "orientationchange", function( event ) {   //判断横屏，还是竖屏
-    if(orientationState=='landscape'){
-      canvas.width = 640;
-      canvas.height = 1008;
-      alertPage.visible = true;
-      orientationState = 'portrait'
-      console.log(orientationState);
-    }else if(orientationState=='portrait'){
-      canvas.width = 1008;
-      canvas.height = 640;
+      if(orientationState=='landscape'){
+        canvas.width = 640;
+        canvas.height = 1008;
+        alertPage.visible = true;
+        orientationState = 'portrait'
+        console.log(orientationState);
+      }else if(orientationState=='portrait'){
+        canvas.width = 1008;
+        canvas.height = 640;
         alertPage.visible = false;
-      orientationState = 'landscape'
-    }
-});
+        orientationState = 'landscape'
+      }
+    });
 
     (function confirm(){   //提示横屏页面
       var bg = new createjs.Shape();
@@ -85,67 +88,121 @@ function init(){
 
     (function start(){   //预加载页面
       startState = 'started';
-    var firstNum = new createjs.SpriteSheet({
-      images:['img/intro/num.png'],
-      frames:{width:40,height:39,count:10},
-      animations:{
-        'run':[0,9,'run',0.01],
-        'end':[0]
-      }
-    });
-    var lastNum = new createjs.SpriteSheet({
-      images:['img/intro/num.png'],
-      frames:{width:40,height:39,count:10},
-      animations:{
-        'run':[0,9,'run',0.1],
-        'end':[0]
-      }
-    });
-    var first = new createjs.Sprite(firstNum,'run');
-    var last = new createjs.Sprite(lastNum,'run');
-    last.x = 44;
-    var num = new createjs.Container();
-    num.addChild(first,last);
-    num.x = 1008/2 - 40/2;
-    num.y = 640/2 - 40/2;
+      var firstNum = new createjs.SpriteSheet({
+        images:['img/intro/num.png'],
+        frames:{width:40,height:39,count:10},
+        animations:{
+          'run':[0,9,'run',0.1],
+          'end':[9]
+        }
+      });
+      var lastNum = new createjs.SpriteSheet({
+        images:['img/intro/num.png'],
+        frames:{width:40,height:39,count:10},
+        animations:{
+          'run':[0,9,'run',1],
+          'end':[8]
+        }
+      });
+      var first = new createjs.Sprite(firstNum,'run');
+      var last = new createjs.Sprite(lastNum,'run');
+      last.x = 44;
+      var num = new createjs.Container();
+      num.addChild(first,last);
+      num.x = 1008/2 - 40/2;
+      num.y = 640/2 - 40/2;
 
-    var loadSheet = new createjs.SpriteSheet({
-      'images':['img/intro/loading.png'],
-      'frames':{
-        'width':1800/9,
-        'height':1000/5,
-        'count':42
-      },
-      'animations':{
-        'run':[0,41,'end',0.5],
-        'end':[41]
-      }
-    })
-    var load = new createjs.Sprite(loadSheet);
-    load.x = 1008/2 - 1800/9/2;
-    load.y = 640/2 - 1000/5/2;
-    load.visible = false;
-    var count = 0;
-    var countRun = setInterval(function (){
-      count++;
-      if(count>=90){
-        clearInterval(countRun);
-        first.gotoAndPlay('end');
-        last.gotoAndPlay('end');
-    num.visible = false;
-    load.visible = true;
-    load.gotoAndPlay('run');
-      };
-      //console.log(count);
-    },40);
-    preloadPage.addChild(num,load);
-    stage.update();
-  })();
+      var loadSheet = new createjs.SpriteSheet({
+        'images':['img/intro/loading.png'],
+        'frames':{
+          'width':1800/9,
+          'height':1000/5,
+          'count':42
+        },
+        'animations':{
+          'run':[0,41,'end',0.5],
+          'end':[41]
+        }
+      })
+      var load = new createjs.Sprite(loadSheet);
+      load.x = 1008/2 - 1800/9/2;
+      load.y = 640/2 - 1000/5/2;
+      load.visible = false;
+      var count = 0;
+      var countRun = setInterval(function (){
+        count++;
+        if(count>=10){
+          clearInterval(countRun);
+          first.gotoAndPlay('end');
+          last.gotoAndPlay('end');
+          queue = new createjs.LoadQueue();
+          createjs.Sound.alternateExtensions = ['mp3'];
+          queue.installPlugin(createjs.Sound);
+          queue.addEventListener('complete',content);
+          queue.loadManifest(preloadList);
+          function content(){
+            createjs.Sound.play('bgMusic');  //play background music
+            num.visible = false;
+            load.visible = true;
+            load.gotoAndPlay('run');
+            setTimeout(function (){
+              page0Fn();
+            },4000);
+          };
+        };
+      },40);
+      preloadPage.addChild(num,load);
+      stage.update();
+    })();
+
+    function page0Fn(){
+        stage.removeChild(preloadPage);
+        var a = new createjs.Bitmap(queue.getResult('page0a'));
+        a.y = 640 - 612;
+        a.x = 0;
+        var txt = new createjs.Bitmap(queue.getResult('page0txt'));
+        txt.x = 1008/2;
+        txt.y = 100;
+        var arrow = new createjs.Sprite(new createjs.SpriteSheet({
+          'images':['img/0/arrow.png'],
+          'frames':{
+            width:'44',
+            height:75/3,
+            count:3
+          },
+          'animations':{
+            'run':[0,2,'run',0.2]
+          }
+        }),'run');
+        arrow.x = 1008 - 20;
+        arrow.y = 640/2 - (75/3)/2;
+        page0.addChild(a,arrow,txt);
+        stage.update();
+    };
+
+    stage.addEventListener('stagemousedown',touchStart);
+
+    function touchStart(){
+        var dx;  //touch的步长
+        source = new createjs.Point(stage.mouseX,stage.mouseY);
+        stage.addEventListener('stagemousemove',touchMove);
+        stage.addEventListener('stagemouseup',touchEnd);
+        function touchMove(){
+          dx = stage.mouseX - source.x ;
+        }
+        function touchEnd(){
+            //page0.x = -1.5*(dx);
+            createjs.Tween.get(page0).to({x:dx},100).getPowOut;
+
+          stage.removeEventListener('stagemousemove',touchMove);
+          stage.removeEventListener('stagemouseup',touchEnd);
+        }
+    };
 
 
   };
 
-  createjs.Ticker.setFPS(24);
+  createjs.Ticker.setFPS(60);
   createjs.Ticker.addEventListener('tick',function (){
     stage.update();
   });
