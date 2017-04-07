@@ -18,6 +18,8 @@ function init(){
 
   function preload(){
     var startState,orientationState,queue;
+    var prev = 0;
+    var logo;
 
     var alertPage = new createjs.Container();     //提示页面
     var preloadPage = new createjs.Container();   //载入页面
@@ -125,6 +127,7 @@ function init(){
         }
       })
       var load = new createjs.Sprite(loadSheet);
+      logo = new createjs.Sprite(loadSheet,'end')
       load.x = 1008/2 - 1800/9/2;
       load.y = 640/2 - 1000/5/2;
       load.visible = false;
@@ -157,13 +160,13 @@ function init(){
 
     function page0Fn(){
         stage.removeChild(preloadPage);
-        var a = new createjs.Bitmap(queue.getResult('page0a'));
-        a.y = 640 - 612;
-        a.x = 0;
-        var txt = new createjs.Bitmap(queue.getResult('page0txt'));
-        txt.x = 1008/2;
-        txt.y = 100;
-        var arrow = new createjs.Sprite(new createjs.SpriteSheet({
+        page0.a = new createjs.Bitmap(queue.getResult('page0a'));
+        page0.a.y = 640 - 612;
+        page0.a.x = 60;
+        page0.txt = new createjs.Bitmap(queue.getResult('page0txt'));
+        page0.txt.x = 1008/2;
+        page0.txt.y = 100;
+        page0.arrow = new createjs.Sprite(new createjs.SpriteSheet({
           'images':['img/0/arrow.png'],
           'frames':{
             width:'44',
@@ -174,9 +177,10 @@ function init(){
             'run':[0,2,'run',0.2]
           }
         }),'run');
-        arrow.x = 1008 - 20;
-        arrow.y = 640/2 - (75/3)/2;
-        page0.addChild(a,arrow,txt);
+        page0.arrow.x = 1008 - 20;
+        page0.arrow.y = 640/2 - (75/3)/2;
+
+        page0.addChild(logo,page0.a,page0.arrow,page0.txt);
         stage.update();
     };
 
@@ -191,9 +195,21 @@ function init(){
           dx = stage.mouseX - source.x ;
         }
         function touchEnd(){
-            //page0.x = -1.5*(dx);
-            createjs.Tween.get(page0).to({x:dx},100).getPowOut;
-
+          if(prev==0){
+            if(page0.x<0){
+              page0.x=0;
+              stage.update();
+              console.log(page0.x);
+            }else{
+            createjs.Tween.get(page0).to({x:dx},1000);
+            }
+            if(dx<0){
+            createjs.Tween.get(page0.txt).to({x:1008/2-50},500);
+            }else{
+            createjs.Tween.get(page0.txt).to({x:1008/2+50},500);
+            }
+            stage.update();
+          }
           stage.removeEventListener('stagemousemove',touchMove);
           stage.removeEventListener('stagemouseup',touchEnd);
         }
